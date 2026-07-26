@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Flask Demo</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f4f4;
+            margin:40px;
+        }
+
+        .card{
+            width:700px;
+            margin:auto;
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px #bbb;
+        }
+
+        h1{
+            color:#007BFF;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        td{
+            padding:10px;
+            border-bottom:1px solid #ddd;
+        }
+
+        .success{
+            color:green;
+            font-weight:bold;
+            font-size:24px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>🚀 Demonstração Flask + Python</h1>
+
+<p class="success">
+Programa Python executado com sucesso!
+</p>
+
+<p>
+Esta página foi gerada dinamicamente pelo servidor Flask.
+Cada atualização da página executa novamente o código Python.
+</p>
+
+<table>
+
+<tr>
+<td><b>Status</b></td>
+<td>{{ dados.status }}</td>
+</tr>
+
+<tr>
+<td><b>Data/Hora</b></td>
+<td>{{ dados.hora }}</td>
+</tr>
+
+<tr>
+<td><b>Versão do Python</b></td>
+<td>{{ dados.python }}</td>
+</tr>
+
+<tr>
+<td><b>Sistema Operacional</b></td>
+<td>{{ dados.sistema }}</td>
+</tr>
+
+<tr>
+<td><b>Hostname</b></td>
+<td>{{ dados.hostname }}</td>
+</tr>
+
+<tr>
+<td><b>PID do Processo</b></td>
+<td>{{ dados.pid }}</td>
+</tr>
+
+<tr>
+<td><b>Número Aleatório</b></td>
+<td>{{ dados.numero }}</td>
+</tr>
+
+</table>
+
+<br>
+
+<p>
+Sempre que você pressionar <b>F5</b>, um novo número aleatório será gerado e a hora será atualizada,
+provando que o código Python está sendo executado novamente.
+</p>
+
+</div>
+
+</body>
+</html>
