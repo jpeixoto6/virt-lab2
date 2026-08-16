@@ -7,6 +7,20 @@ import random
 
 app = Flask(__name__)
 
+def get_application_info():
+    """
+    Obtém informações da instância onde a aplicação está executando.
+    No OpenShift, o hostname normalmente corresponde ao nome do Pod.
+    """
+
+    hostname = socket.gethostname()
+
+    try:
+        ip_address = socket.gethostbyname(hostname)
+    except socket.gaierror:
+        ip_address = "IP não identificado"
+
+    return hostname, ip_address
 
 @app.route("/")
 def home():
@@ -24,6 +38,31 @@ def home():
     }
 
     return render_template("index.html", dados=dados)
+
+@app.route("/info")
+def info():
+    """
+    Endpoint que retorna as informações da instância
+    em formato JSON.
+    """
+
+    hostname, ip_address = get_application_info()
+
+    return {
+        "hostname": hostname,
+        "ip": ip_address,
+        "port": 3333
+    }
+
+@app.route("/health")
+def health():
+    """
+    Endpoint simples para verificar se a aplicação está ativa.
+    """
+
+    return {
+        "status": "OK"
+    }
 
 
 if __name__ == "__main__":
