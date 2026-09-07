@@ -1,0 +1,102 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: virt-lab2
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: virt-lab2
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/jpeixoto6/virt-lab2.git
+      ref: main
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: virt-lab2:latest
+  triggers:
+    - type: ConfigChange
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: virt-lab2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: virt-lab2
+  template:
+    metadata:
+      labels:
+        app: virt-lab2
+    spec:
+      containers:
+        - name: virt-lab2
+          image: image-registry.openshift-image-registry.svc:5000/PROJECT_NAME/virt-lab2:latest
+          ports:
+            - name: http
+              containerPort: 3333
+              protocol: TCP
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 2
+            successThreshold: 1
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: virt-lab2
+spec:
+  selector:
+    app: virt-lab2
+  ports:
+    - name: http
+      port: 3333
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: virt-lab2
+spec:
+  to:
+    kind: Service
+    name: virt-lab2
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
